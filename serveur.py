@@ -18,6 +18,22 @@ for pokemon in pokedex:
   nom = pokemon["name"]
   annuaire_pokemon[nom] = pokemon
 
+@app.route('/recherche')
+def recherche():
+  return """
+  <!DOCTYPE html>
+  <html lang="fr">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" type="text/css" href="/style.css" />
+        <title>Rechercher un pokemons</title>
+    </head>
+    <body>  
+      <h1>Rechercher un pokemon</h1>
+    </body>
+  </html>
+  """
+
 @app.route('/')
 def index():
   # Créer dynamiquement une chaîne de caractère peut se faire selon
