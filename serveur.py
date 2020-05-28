@@ -18,26 +18,6 @@ for pokemon in pokedex:
   nom = pokemon["name"]
   annuaire_pokemon[nom] = pokemon
 
-@app.route('/recherche')
-def recherche():
-  return """
-  <!DOCTYPE html>
-  <html lang="fr">
-    <head>
-        <meta charset="utf-8" />
-        <link rel="stylesheet" type="text/css" href="/style.css" />
-        <title>Rechercher un pokemons</title>
-    </head>
-    <body>  
-      <h1>Rechercher un pokemon</h1>
-        <form action="resultat" method="get">
-            <label>Nom du pokemon: </label><input type="text" name="nom" />
-            <input type="submit" value="Envoyer" />
-        </form>
-    </body>
-  </html>
-  """
-
 @app.route('/')
 def index():
   # Créer dynamiquement une chaîne de caractère peut se faire selon
@@ -62,7 +42,10 @@ def index():
     </head>
     <body>
       <div id="recherche">
-        <a href="recherche">Rechercher un pokemon</a>
+        <form action="resultat" method="get">
+            <label>Nom du pokemon: </label><input type="text" name="nom" />
+            <input type="submit" value="Envoyer" />
+        </form>
       </div>
       <table id="pokedex">
   """)
@@ -153,7 +136,6 @@ def css():
 def resultat():
   result = request.args
   n = result['nom']
-  #return render_template("resultat.html", nom=n)
   return pokemons(n)
 
 
