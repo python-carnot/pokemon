@@ -7,6 +7,15 @@ h1 {
     width: 10%;
 }
 
+#recherche div {
+    display: flex;
+}
+
+#recherche a {
+    margin-left: auto;
+    margin-right: auto; 
+}
+
 #pokedex img {
     /* Une image occupe 100% de sa case */
     width: 100%;

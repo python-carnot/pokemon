@@ -30,6 +30,10 @@ def recherche():
     </head>
     <body>  
       <h1>Rechercher un pokemon</h1>
+        <form action="resultat" method="get">
+            <label>Nom du pokemon: </label><input type="text" name="nom" />
+            <input type="submit" value="Envoyer" />
+        </form>
     </body>
   </html>
   """
@@ -57,6 +61,9 @@ def index():
         <title>Tous les pokemons</title>
     </head>
     <body>
+      <div id="recherche">
+        <a href="recherche">Rechercher un pokemon</a>
+      </div>
       <table id="pokedex">
   """)
 
@@ -141,6 +148,14 @@ def pokemons(nom_pokemon):
 @app.route('/style.css')
 def css():
   return app.send_static_file("style.css")
+
+@app.route('/resultat', methods=['GET'])
+def resultat():
+  result = request.args
+  n = result['nom']
+  #return render_template("resultat.html", nom=n)
+  return pokemons(n)
+
 
 app.run(debug=True)
 
