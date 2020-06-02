@@ -16,7 +16,7 @@ with open("pokemons.csv") as csvfile:
 annuaire_pokemon = {}
 for pokemon in pokedex:
   nom = pokemon["name"]
-  annuaire_pokemon[nom] = pokemon
+  annuaire_pokemon[nom.lower()] = pokemon
 
 @app.route('/')
 def index():
@@ -83,7 +83,7 @@ def index():
 
 @app.route("/pokemons/<nom_pokemon>")
 def pokemons(nom_pokemon):
-  pokemon = annuaire_pokemon[nom_pokemon]
+  pokemon = annuaire_pokemon[nom_pokemon.lower()]
 
   html = []
   
