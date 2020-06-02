@@ -44,7 +44,7 @@ def index():
       <div id="recherche">
         <form action="resultat" method="get">
             <label>Nom du pokemon: </label><input type="text" name="nom" />
-            <input type="submit" value="Envoyer" />
+            <input type="submit" value="Aller voir ce pokemon" />
         </form>
       </div>
       <table id="pokedex">
