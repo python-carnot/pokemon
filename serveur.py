@@ -25,6 +25,8 @@ with open("pokemons.csv") as csvfile:
     if len(t2) > 0 and t2 not in tous_les_types:
       tous_les_types.append(t2)
 
+tous_les_types.sort()
+
 # On crée un dictionnaire associant à chaque nom de pokemon
 # son enregistrement dans le pokedex
 annuaire_pokemon = {}
@@ -96,6 +98,8 @@ def index():
 
   formulaire_de_recherche(html)
 
+  affiche_tous_les_types(html)
+
   ajoute_table_pokemons(html)
 
   html.append("""
@@ -106,6 +110,27 @@ def index():
   # On renvoie toutes les portions de html, concaténées en une unique
   # chaîne de caratères:
   return "".join(html)
+
+def affiche_tous_les_types(html):
+  html.append("""<div id="categories">
+  """)
+  html.append("""
+  <table>
+    <tr>
+  """)
+
+  for t in tous_les_types:
+    html.append("""
+      <td>
+        <a href="/type/{}>{}</a>
+      </td>
+    """.format(t, t.title()))
+
+  html.append("""
+    </tr>
+  </table>
+  """)
+  html.append("</div>")
 
 def ajoute_table_pokemons(html, type1="", type2=""):
   html.append("""
