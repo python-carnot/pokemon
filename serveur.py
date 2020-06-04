@@ -135,8 +135,9 @@ def ajoute_table_pokemons(html, type1="", type2=""):
               <a href="pokemons/{}">
                 <img src="/static/{}" alt="{}"/>
               </a>
+              <p>{}</p>
             </td>
-      """.format(nom, chemin_image, nom))
+      """.format(nom, chemin_image, nom, nom))
 
       if i % nombre_pokemons_colonne == nombre_pokemons_colonne - 1:
         # On est à la fin d'une ligne
