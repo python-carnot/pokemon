@@ -14,6 +14,12 @@ with open("pokemons.csv") as csvfile:
     pokedex.append(pokemon)
     t1 = pokemon["type1"].lower()
     t2 = pokemon["type2"].lower()
+
+    # On nettoie les pokémons qui ont 2x le même type
+    if t1 == t2:
+        t2 = ""
+        pokemon["type2"] = ""
+        
     if len(t1) > 0 and t1 not in tous_les_types:
       tous_les_types.append(t1)
     if len(t2) > 0 and t2 not in tous_les_types:
