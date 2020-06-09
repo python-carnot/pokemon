@@ -122,7 +122,7 @@ def affiche_tous_les_types(html):
   for t in tous_les_types:
     html.append("""
       <td>
-        <a href="/type/{}>{}</a>
+        <a href="/type/{}">{}</a>
       </td>
     """.format(t, t.title()))
 
@@ -252,6 +252,30 @@ def categories():
   """)
 
   ajoute_table_pokemons(html, type1, type2)
+
+  html.append("""
+    </body>
+  </html>
+  """)
+
+  return "".join(html)
+
+@app.route("/type/<type_pokemon>")
+def pokemons_par_type(type_pokemon):
+  html = []
+  
+  html.append("""
+  <!DOCTYPE html>
+  <html lang="fr">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" type="text/css" href="/style.css" />
+        <title>Pokemons du type {}</title>
+    </head>
+    <body>
+      <h1>Pokemons du type {}</h1>
+
+  """.format(type_pokemon, type_pokemon))
 
   html.append("""
     </body>
