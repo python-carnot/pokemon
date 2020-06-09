@@ -27,6 +27,25 @@ with open("pokemons.csv") as csvfile:
 
 tous_les_types.sort()
 
+combinaisons_types = {}
+
+for i in range(len(tous_les_types) - 1):
+    for j in range(i, len(tous_les_types)):
+        t1 = tous_les_types[i]
+        t2 = tous_les_types[j]
+        combinaisons_types[(t1, t2)] = []
+        combinaisons_types[(t2, t1)] = []
+
+for p in pokedex:
+    t1 = p["type1"]
+    t2 = p["type2"]
+
+    if (t1, t2) in combinaisons_types:
+        combinaisons_types[(t1, t2)].append(p["name"])
+
+    if len(t2) > 0 and (t2, t1) in combinaisons_types:
+        combinaisons_types[(t2, t1)].append(p["name"])       
+
 # On crée un dictionnaire associant à chaque nom de pokemon
 # son enregistrement dans le pokedex
 annuaire_pokemon = {}
@@ -157,7 +176,7 @@ def ajoute_table_pokemons(html, type1="", type2=""):
 
       html.append("""
             <td>
-              <a href="pokemons/{}">
+              <a href="/pokemons/{}">
                 <img src="/static/{}" alt="{}"/>
               </a>
               <p>{}</p>
@@ -233,7 +252,7 @@ def resultat():
   return pokemons(n)
 
 @app.route('/categories', methods=['GET'])
-def categories():
+def affichage_par_categories():
   result = request.args
   type1 = result['type1']
   type2 = result['type2']
@@ -270,12 +289,32 @@ def pokemons_par_type(type_pokemon):
     <head>
         <meta charset="utf-8" />
         <link rel="stylesheet" type="text/css" href="/style.css" />
-        <title>Pokemons du type {}</title>
+        <title>Pokemons ayant le type {}</title>
     </head>
     <body>
-      <h1>Pokemons du type {}</h1>
+      <h1>Pokemons ayant le type {}</h1>
 
   """.format(type_pokemon, type_pokemon))
+
+  html.append("""
+      <h2>Type {} uniquement</h2>
+  """.format(type_pokemon))
+
+  ajoute_table_pokemons(html, type_pokemon)
+
+  for t in tous_les_types:
+    if t != type_pokemon and t != "":
+      html.append("""
+          <h2>Type {} - {}</h2>
+      """.format(type_pokemon, t))
+
+      if len(combinaisons_types[(type_pokemon, t)]) > 0:
+        ajoute_table_pokemons(html, type_pokemon, t)
+      else:
+        html.append("""
+          <p>Aucun pokemon n'a cette combinaison de types.</p>
+        """)
+
 
   html.append("""
     </body>
