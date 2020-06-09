@@ -188,7 +188,7 @@ def ajoute_table_pokemons(html, type1="", type2=""):
       """)
 
     html.append("""
-            <a href="pokemons/{}">
+            <a href="/pokemons/{}">
               <img src="/static/{}" alt="{}"/>
             </a>
             <p>{}</p>
