@@ -130,8 +130,16 @@ def ajoute_table_pokemons(html, type1="", type2=""):
       nom = pokemon["name"]
       chemin_image = pokemon["image"]
 
+      if pokemon["is_legendary"] == "0":
+        html.append("""
+              <td>
+        """)
+      else:
+        html.append("""
+              <td class="legendary">
+        """)
+
       html.append("""
-            <td>
               <a href="pokemons/{}">
                 <img src="/static/{}" alt="{}"/>
               </a>

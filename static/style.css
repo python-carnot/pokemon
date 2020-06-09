@@ -18,6 +18,10 @@ h1 {
     text-align: center;
 }
 
+.legendary {
+    background-color: gold;
+}
+
 #recherche div {
     display: flex;
 }
