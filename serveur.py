@@ -26,25 +26,24 @@ with open("pokemons.csv") as csvfile:
       tous_les_types.append(t2)
 
 tous_les_types.sort()
+tous_les_types.append('')
 
 combinaisons_types = {}
-
 for i in range(len(tous_les_types) - 1):
     for j in range(i, len(tous_les_types)):
         t1 = tous_les_types[i]
         t2 = tous_les_types[j]
         combinaisons_types[(t1, t2)] = []
         combinaisons_types[(t2, t1)] = []
-
 for p in pokedex:
     t1 = p["type1"]
     t2 = p["type2"]
 
     if (t1, t2) in combinaisons_types:
-        combinaisons_types[(t1, t2)].append(p["name"])
+        combinaisons_types[(t1, t2)].append(p["name"].lower())
 
     if len(t2) > 0 and (t2, t1) in combinaisons_types:
-        combinaisons_types[(t2, t1)].append(p["name"])       
+        combinaisons_types[(t2, t1)].append(p["name"].lower())       
 
 # On crée un dictionnaire associant à chaque nom de pokemon
 # son enregistrement dans le pokedex
@@ -162,32 +161,37 @@ def ajoute_table_pokemons(html, type1="", type2=""):
   if type2 == "none":
     type2 = ""
 
+  if type1 == "":
+    # On veut la liste *complète* des pokemons
+    liste_pokemons = annuaire_pokemon.keys()
+  else:
+    # On veut tous les pokemons ayant les types indiqués
+    liste_pokemons = combinaisons_types[(type1, type2)]
+
   i = 0
-  for pokemon in pokedex:
-    if ((type1 == "" and type2 == "") or 
-        (type1 == pokemon["type1"].lower() and type2 == pokemon["type2"].lower()) or
-        (type1 == pokemon["type2"].lower() and type2 == pokemon["type1"].lower())):
-      if i % nombre_pokemons_colonne == 0:
-        # On est au début d'une ligne
-        html.append("      <tr>")
-      
-      nom = pokemon["name"]
-      chemin_image = pokemon["image"]
+  for nom_pokemon in liste_pokemons:
+    pokemon = annuaire_pokemon[nom_pokemon]
+    if i % nombre_pokemons_colonne == 0:
+      # On est au début d'une ligne
+      html.append("      <tr>")
+    
+    nom = pokemon["name"]
+    chemin_image = pokemon["image"]
 
-      html.append("""
-            <td>
-              <a href="/pokemons/{}">
-                <img src="/static/{}" alt="{}"/>
-              </a>
-              <p>{}</p>
-            </td>
-      """.format(nom, chemin_image, nom, nom))
+    html.append("""
+          <td>
+            <a href="/pokemons/{}">
+              <img src="/static/{}" alt="{}"/>
+            </a>
+            <p>{}</p>
+          </td>
+    """.format(nom, chemin_image, nom, nom))
 
-      if i % nombre_pokemons_colonne == nombre_pokemons_colonne - 1:
-        # On est à la fin d'une ligne
-        html.append("      </tr>")
-      
-      i = i + 1
+    if i % nombre_pokemons_colonne == nombre_pokemons_colonne - 1:
+      # On est à la fin d'une ligne
+      html.append("      </tr>")
+    
+    i = i + 1
 
 
   html.append("""        
