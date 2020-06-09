@@ -25,6 +25,26 @@ with open("pokemons.csv") as csvfile:
     if len(t2) > 0 and t2 not in tous_les_types:
       tous_les_types.append(t2)
 
+tous_les_types.sort()
+tous_les_types.append('')
+
+combinaisons_types = {}
+for i in range(len(tous_les_types) - 1):
+    for j in range(i, len(tous_les_types)):
+        t1 = tous_les_types[i]
+        t2 = tous_les_types[j]
+        combinaisons_types[(t1, t2)] = []
+        combinaisons_types[(t2, t1)] = []
+for p in pokedex:
+    t1 = p["type1"]
+    t2 = p["type2"]
+
+    if (t1, t2) in combinaisons_types:
+        combinaisons_types[(t1, t2)].append(p["name"].lower())
+
+    if len(t2) > 0 and (t2, t1) in combinaisons_types:
+        combinaisons_types[(t2, t1)].append(p["name"].lower())       
+
 # On crée un dictionnaire associant à chaque nom de pokemon
 # son enregistrement dans le pokedex
 annuaire_pokemon = {}
@@ -96,6 +116,8 @@ def index():
 
   formulaire_de_recherche(html)
 
+  affiche_tous_les_types(html)
+
   ajoute_table_pokemons(html)
 
   html.append("""
@@ -106,6 +128,27 @@ def index():
   # On renvoie toutes les portions de html, concaténées en une unique
   # chaîne de caratères:
   return "".join(html)
+
+def affiche_tous_les_types(html):
+  html.append("""<div id="categories">
+  """)
+  html.append("""
+  <table>
+    <tr>
+  """)
+
+  for t in tous_les_types:
+    html.append("""
+      <td>
+        <a href="/type/{}">{}</a>
+      </td>
+    """.format(t, t.title()))
+
+  html.append("""
+    </tr>
+  </table>
+  """)
+  html.append("</div>")
 
 def ajoute_table_pokemons(html, type1="", type2=""):
   html.append("""
@@ -118,40 +161,45 @@ def ajoute_table_pokemons(html, type1="", type2=""):
   if type2 == "none":
     type2 = ""
 
+  if type1 == "":
+    # On veut la liste *complète* des pokemons
+    liste_pokemons = annuaire_pokemon.keys()
+  else:
+    # On veut tous les pokemons ayant les types indiqués
+    liste_pokemons = combinaisons_types[(type1, type2)]
+
   i = 0
-  for pokemon in pokedex:
-    if ((type1 == "" and type2 == "") or 
-        (type1 == pokemon["type1"].lower() and type2 == pokemon["type2"].lower()) or
-        (type1 == pokemon["type2"].lower() and type2 == pokemon["type1"].lower())):
-      if i % nombre_pokemons_colonne == 0:
-        # On est au début d'une ligne
-        html.append("      <tr>")
-      
-      nom = pokemon["name"]
-      chemin_image = pokemon["image"]
+  for nom_pokemon in liste_pokemons:
+    pokemon = annuaire_pokemon[nom_pokemon]
+    if i % nombre_pokemons_colonne == 0:
+      # On est au début d'une ligne
+      html.append("      <tr>")
+    
+    nom = pokemon["name"]
+    chemin_image = pokemon["image"]
 
-      if pokemon["is_legendary"] == "0":
-        html.append("""
-              <td>
-        """)
-      else:
-        html.append("""
-              <td class="legendary">
-        """)
-
+    if pokemon["is_legendary"] == "0":
       html.append("""
-              <a href="pokemons/{}">
-                <img src="/static/{}" alt="{}"/>
-              </a>
-              <p>{}</p>
-            </td>
-      """.format(nom, chemin_image, nom, nom))
+            <td>
+      """)
+    else:
+      html.append("""
+            <td class="legendary">
+      """)
 
-      if i % nombre_pokemons_colonne == nombre_pokemons_colonne - 1:
-        # On est à la fin d'une ligne
-        html.append("      </tr>")
-      
-      i = i + 1
+    html.append("""
+            <a href="pokemons/{}">
+              <img src="/static/{}" alt="{}"/>
+            </a>
+            <p>{}</p>
+          </td>
+    """.format(nom, chemin_image, nom, nom))
+
+    if i % nombre_pokemons_colonne == nombre_pokemons_colonne - 1:
+      # On est à la fin d'une ligne
+      html.append("      </tr>")
+    
+    i = i + 1
 
 
   html.append("""        
@@ -216,7 +264,7 @@ def resultat():
   return pokemons(n)
 
 @app.route('/categories', methods=['GET'])
-def categories():
+def affichage_par_categories():
   result = request.args
   type1 = result['type1']
   type2 = result['type2']
@@ -235,6 +283,50 @@ def categories():
   """)
 
   ajoute_table_pokemons(html, type1, type2)
+
+  html.append("""
+    </body>
+  </html>
+  """)
+
+  return "".join(html)
+
+@app.route("/type/<type_pokemon>")
+def pokemons_par_type(type_pokemon):
+  html = []
+  
+  html.append("""
+  <!DOCTYPE html>
+  <html lang="fr">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" type="text/css" href="/style.css" />
+        <title>Pokemons ayant le type {}</title>
+    </head>
+    <body>
+      <h1>Pokemons ayant le type {}</h1>
+
+  """.format(type_pokemon, type_pokemon))
+
+  html.append("""
+      <h2>Type {} uniquement</h2>
+  """.format(type_pokemon))
+
+  ajoute_table_pokemons(html, type_pokemon)
+
+  for t in tous_les_types:
+    if t != type_pokemon and t != "":
+      html.append("""
+          <h2>Type {} - {}</h2>
+      """.format(type_pokemon, t))
+
+      if len(combinaisons_types[(type_pokemon, t)]) > 0:
+        ajoute_table_pokemons(html, type_pokemon, t)
+      else:
+        html.append("""
+          <p>Aucun pokemon n'a cette combinaison de types.</p>
+        """)
+
 
   html.append("""
     </body>
