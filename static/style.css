@@ -3,6 +3,31 @@ h1 {
     color: blue;
 }
 
+#matrice table {
+    border-collapse: collapse;
+    background-color: ivory;
+    /*border: 1px solid salmon;*/
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 12px;
+}
+
+#matrice tr {
+    height: 25px;
+}
+
+#matrice th, #matrice td {
+    border: 1px solid brown;
+    text-align: center;
+    width: 50px;
+}
+
+#matrice th {
+    background-color: goldenrod;
+}
+
 #pokedex {
     margin-top: 20px;
     margin-left: auto;

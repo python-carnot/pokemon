@@ -45,6 +45,11 @@ for p in pokedex:
     if len(t2) > 0 and (t2, t1) in combinaisons_types:
         combinaisons_types[(t2, t1)].append(p["name"].lower())       
 
+nombre_pokemon_maxi = 0
+for liste in combinaisons_types.values():
+  if len(liste) > nombre_pokemon_maxi:
+    nombre_pokemon_maxi = len(liste)
+
 # On crée un dictionnaire associant à chaque nom de pokemon
 # son enregistrement dans le pokedex
 annuaire_pokemon = {}
@@ -95,6 +100,8 @@ def index():
 
   formulaire_de_recherche(html)
 
+  matrice_des_types(html)
+
   affiche_tous_les_types(html)
 
   ajoute_table_pokemons(html)
@@ -107,6 +114,70 @@ def index():
   # On renvoie toutes les portions de html, concaténées en une unique
   # chaîne de caratères:
   return "".join(html)
+
+def matrice_des_types(html):
+  html.append("""
+  <div id="matrice">
+  """)
+
+  html.append("""
+    <table>
+  """)
+
+  html.append("""
+      <tr>
+  """)  
+  
+  html.append("""<th></th>""")
+  for t in tous_les_types:
+    if len(t) > 0:
+      html.append("""<th>{}</th>""".format(t.title()))
+
+  html.append("""
+      </tr>
+  """)  
+
+  html.append("""<tr>""")
+  html.append("""<th>Empty</th>""")
+
+  for t2 in tous_les_types:
+    if len(t2) > 0:
+      nombre = len(combinaisons_types[(t2, "")])
+      if nombre > 0:
+        html.append("""<td>{}</td>""".format(nombre))
+      else:
+        html.append("""<td></td>""")
+
+  html.append("""</tr>""")
+
+  for t1 in tous_les_types:
+    if len(t1) > 0:
+      html.append("""<tr>""")
+      html.append("""<th>{}</th>""".format(t1.title()))
+
+      for t2 in tous_les_types:
+        if len(t2) > 0:
+          nombre = len(combinaisons_types[(t1, t2)])
+          if nombre > 0:
+            valeur_couleur = int(255*nombre / nombre_pokemon_maxi)
+            valeur_couleur_hexa = hex(valeur_couleur)[2:]
+            couleur = "#{}{}{}".format(valeur_couleur_hexa, valeur_couleur_hexa, valeur_couleur_hexa)
+            html.append("""<td style="background-color: {}">{}</td>""".format(couleur, nombre))
+          else:
+            html.append("""<td></td>""")
+
+      html.append("""</tr>""")
+
+    
+
+
+  html.append("""
+    </table>""")
+
+
+  html.append("""
+  </div>""")
+
 
 def affiche_tous_les_types(html):
   html.append("""<div id="categories">
