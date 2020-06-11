@@ -63,27 +63,6 @@ def formulaire_de_recherche(html):
           <label>Nom du pokemon: </label><input type="text" name="nom" />
           <input type="submit" value="Aller voir ce pokemon" />
       </form>
-      <form action="categories" method="get">
-          <label>Type 1: </label>
-          <select id="type1" name="type1">
-  """)
-
-  liste_des_options_de_types(html)
-
-  html.append("""
-          </select>
-          <label>Type 2: </label>
-          <select id="type2" name="type2">
-            <option value="none">No second type</option>
-  """)
-  
-
-  liste_des_options_de_types(html)
-
-  html.append("""
-          </select>
-          <input type="submit" value="Chercher tous les pokemons de ce type" />
-      </form>
     </div>
   """)
 
