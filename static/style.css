@@ -18,6 +18,11 @@ h1 {
     height: 25px;
 }
 
+@font-face {
+    font-family: "digits";
+    src: url("/font.ttf");
+}
+
 #matrice th, #matrice td {
     border: 1px solid brown;
     text-align: center;
@@ -26,6 +31,8 @@ h1 {
 
 #matrice td.clickable {
     cursor: pointer;
+    font-family: "digits";
+    font-size: 16px;
 }
 
 #matrice th {

@@ -280,6 +280,10 @@ def pokemons(nom_pokemon):
 def css():
   return app.send_static_file("style.css")
 
+@app.route('/font.ttf')
+def font():
+  return app.send_static_file("digital-7-mono.ttf")
+
 @app.route('/resultat', methods=['GET'])
 def resultat():
   result = request.args
