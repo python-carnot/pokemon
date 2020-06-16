@@ -115,6 +115,11 @@ def index():
   # chaîne de caratères:
   return "".join(html)
 
+def calcule_couleur_dégradé(nombre, nombre_pokemon_maxi):
+  valeur_couleur = 255 - int(128 * pow(nombre / nombre_pokemon_maxi, 0.33))
+  valeur_couleur_hexa = hex(valeur_couleur)[2:]
+  return "#{}{}{}".format(valeur_couleur_hexa, valeur_couleur_hexa, valeur_couleur_hexa)
+
 def matrice_des_types(html):
   html.append("""
   <div id="matrice">
@@ -137,36 +142,26 @@ def matrice_des_types(html):
       </tr>
   """)  
 
-  html.append("""<tr>""")
-  html.append("""<th>Empty</th>""")
-
-  for t2 in tous_les_types:
-    if len(t2) > 0:
-      nombre = len(combinaisons_types[(t2, "")])
-      if nombre > 0:
-        html.append("""<td>{}</td>""".format(nombre))
-      else:
-        html.append("""<td></td>""")
-
-  html.append("""</tr>""")
-
   for t1 in tous_les_types:
+    html.append("""<tr>""")
     if len(t1) > 0:
-      html.append("""<tr>""")
       html.append("""<th>{}</th>""".format(t1.title()))
+    else:
+      html.append("""<th>Empty</th>""")
 
-      for t2 in tous_les_types:
-        if len(t2) > 0:
+    for t2 in tous_les_types:
+      if len(t2) > 0:
+        if len(t1) > 0:
           nombre = len(combinaisons_types[(t1, t2)])
-          if nombre > 0:
-            valeur_couleur = int(255*nombre / nombre_pokemon_maxi)
-            valeur_couleur_hexa = hex(valeur_couleur)[2:]
-            couleur = "#{}{}{}".format(valeur_couleur_hexa, valeur_couleur_hexa, valeur_couleur_hexa)
-            html.append("""<td style="background-color: {}">{}</td>""".format(couleur, nombre))
-          else:
-            html.append("""<td></td>""")
+        else:
+          nombre = len(combinaisons_types[(t2, "")])
+        if nombre > 0:
+          couleur = calcule_couleur_dégradé(nombre, nombre_pokemon_maxi)
+          html.append("""<td style="background-color: {}">{}</td>""".format(couleur, nombre))
+        else:
+          html.append("""<td></td>""")
 
-      html.append("""</tr>""")
+    html.append("""</tr>""")
 
     
 
