@@ -24,6 +24,10 @@ h1 {
     width: 50px;
 }
 
+#matrice td.clickable {
+    cursor: pointer;
+}
+
 #matrice th {
     background-color: goldenrod;
 }

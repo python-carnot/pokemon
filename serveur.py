@@ -102,8 +102,6 @@ def index():
 
   matrice_des_types(html)
 
-  affiche_tous_les_types(html)
-
   ajoute_table_pokemons(html)
 
   html.append("""
@@ -157,14 +155,16 @@ def matrice_des_types(html):
           nombre = len(combinaisons_types[(t2, "")])
         if nombre > 0:
           couleur = calcule_couleur_dégradé(nombre, nombre_pokemon_maxi)
-          html.append("""<td style="background-color: {}">{}</td>""".format(couleur, nombre))
+          # url = Universal Remote Location
+          if len(t1) > 0:
+            url = "/categories?type1={}&type2={}".format(t1, t2)
+          else:
+            url = "/type/{}".format(t2)
+          html.append("""<td class="clickable" onclick="parent.location='{}'" style="background-color: {}">{}</td>""".format(url, couleur, nombre))
         else:
           html.append("""<td></td>""")
 
     html.append("""</tr>""")
-
-    
-
 
   html.append("""
     </table>""")
@@ -172,28 +172,6 @@ def matrice_des_types(html):
 
   html.append("""
   </div>""")
-
-
-def affiche_tous_les_types(html):
-  html.append("""<div id="categories">
-  """)
-  html.append("""
-  <table>
-    <tr>
-  """)
-
-  for t in tous_les_types:
-    html.append("""
-      <td>
-        <a href="/type/{}">{}</a>
-      </td>
-    """.format(t, t.title()))
-
-  html.append("""
-    </tr>
-  </table>
-  """)
-  html.append("</div>")
 
 def ajoute_table_pokemons(html, type1="", type2=""):
   html.append("""
@@ -326,6 +304,8 @@ def affichage_par_categories():
     </head>
     <body>
   """)
+
+  html.append("<h1>Pokemons de type {} - {}</h1>".format(type1, type2))
 
   ajoute_table_pokemons(html, type1, type2)
 
